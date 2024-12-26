@@ -9,6 +9,7 @@
 ```bash
 三台Linux主机系统，分别将其命名为 Master，Slave1，Slave2 然后确保三台机器处于同一个网段下，可以互相访问到彼此
 ```
+- 该脚本在执行的时候将会安装Jdk环境（jdk-8u212-linux-x64）与Hadoop环境（hadoop-3.1.3）
 
  <br>
  
