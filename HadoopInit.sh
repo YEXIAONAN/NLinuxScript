@@ -17,7 +17,7 @@ cat <<EOF
 欢迎使用 “楠不理” 快速搭建集群脚本，该脚本尽在你对搭建很熟练才需
 使用，如不熟悉搭建，请勿使用！
 
-脚本已在GitHub开源,链接 https://github.com/YEXIAONAN/HadoopScript
+脚本已在GitHub开源,链接 https://github.com/YEXIAONAN/AutomaticScript
 ----------------------------------------------------------------
 EOF
 
