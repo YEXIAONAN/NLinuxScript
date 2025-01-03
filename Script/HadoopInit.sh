@@ -177,10 +177,28 @@ sleep 2
 
 
 
+# 修改后的脚本段
 
-# 定义固定的变量
-PACKAGE_JDK="jdk-8u212-linux-x64.tar.gz"
-PACKAGE_HADOOP="hadoop-3.1.3.tar.gz"
+# 提示用户输入 JDK 和 Hadoop 软件包的路径
+echo "请输入 JDK 软件包的完整路径 (例如：/path/to/jdk-8u212-linux-x64.tar.gz)："
+read -p "JDK 路径：" JDK_PATH
+echo "请输入 Hadoop 软件包的完整路径 (例如：/path/to/hadoop-3.1.3.tar.gz)："
+read -p "Hadoop 路径：" HADOOP_PATH
+
+# 检查路径是否存在
+if [ ! -f "$JDK_PATH" ]; then
+    echo "错误: JDK 软件包路径不存在，请检查路径。"
+    exit 1
+fi
+
+if [ ! -f "$HADOOP_PATH" ]; then
+    echo "错误: Hadoop 软件包路径不存在，请检查路径。"
+    exit 1
+fi
+
+echo "已确认 JDK 和 Hadoop 软件包路径。开始解压..."
+
+# 定义目标路径
 TARGET_DIR="/opt/module"
 
 # 创建目标目录
@@ -188,28 +206,20 @@ mkdir -p "$TARGET_DIR"
 
 # 解压并重命名的函数
 extract_and_rename() {
-    local package_name=$1
+    local package_path=$1
     local target_dir=$2
     local new_name=$3
 
-    # 检查软件包是否存在
-    if [ ! -f "$package_name" ]; then
-        echo "错误: 软件包 $package_name 不存在，请检查路径。"
-        return 1
-    fi
-
-    echo "正在解压 $package_name 到 $target_dir..."
-    tar -zxvf "$package_name" -C "$target_dir" >/dev/null 2>&1
-    if [ $? -ne 0 ]; then
-        echo "解压失败，请检查软件包 $package_name 是否有效。"
-        return 1
-    fi
-
     # 获取解压后的目录名称
-    local extracted_dir
-    extracted_dir=$(tar -tf "$package_name" | head -n 1 | cut -d'/' -f1)
+    extracted_dir=$(tar -tf "$package_path" | head -n 1 | cut -d'/' -f1)
 
-    # 检查是否解压成功并重命名
+    echo "正在解压 $package_path 到 $target_dir..."
+    tar -zxvf "$package_path" -C "$target_dir" >/dev/null 2>&1
+    if [ $? -ne 0 ]; then
+        echo "解压失败，请检查软件包 $package_path 是否有效。"
+        return 1
+    fi
+
     if [ -d "$target_dir/$extracted_dir" ]; then
         mv "$target_dir/$extracted_dir" "$target_dir/$new_name"
         echo "软件包解压完毕，并已重命名为 $new_name"
@@ -223,10 +233,11 @@ extract_and_rename() {
 }
 
 # 解压 JDK 和 Hadoop
-extract_and_rename "$PACKAGE_JDK" "$TARGET_DIR" "jdk"
-extract_and_rename "$PACKAGE_HADOOP" "$TARGET_DIR" "hadoop"
+extract_and_rename "$JDK_PATH" "$TARGET_DIR" "jdk"
+extract_and_rename "$HADOOP_PATH" "$TARGET_DIR" "hadoop"
 
 echo "所有软件包已成功处理完毕。"
+
 
 
 
